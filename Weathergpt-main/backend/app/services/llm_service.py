@@ -891,7 +891,23 @@ class LLMService:
         elif understanding.intent == "UMBRELLA_ADVICE":
             rec_summary = "RECOMMENDED" if (forecast.get("daily", [{}])[1].get("precip_probability", 20) >= 40 or current.get("precipitation", 0) > 0.2) else "NOT_NEEDED"
 
-        # Structured Development Logs Requested by Specification
+        msg_before = len(conversation_history) if conversation_history else 0
+        msg_after = msg_before + 2
+
+        # Standardized Development Logs Requested by Specification
+        print(f"[WeatherGPT] User Query: {text}")
+        print(f"[WeatherGPT] Detected Language: {understanding.style} ({understanding.language})")
+        print(f"[WeatherGPT] Detected Intent: {understanding.intent}")
+        print(f"[WeatherGPT] Detected Location: {understanding.extracted_location or 'None'}")
+        print(f"[WeatherGPT] Resolved Location: {active_city}")
+        print(f"[WeatherGPT] Latitude: {resolved_lat}")
+        print(f"[WeatherGPT] Longitude: {resolved_lon}")
+        print(f"[WeatherGPT] Weather Request: {active_city} ({resolved_lat}, {resolved_lon})")
+        print(f"[WeatherGPT] Weather Response Location: {active_city} ({resolved_lat}, {resolved_lon})")
+        print(f"[WeatherGPT] Chat Messages Before: {msg_before}")
+        print(f"[WeatherGPT] Chat Messages After: {msg_after}")
+
+        # Additional Debug Logs for Telemetry Test Compatibility
         print(f"[WeatherGPT][QUERY]\nUser message: {text}")
         print(f"[WeatherGPT][LANGUAGE]\nDetected: {understanding.style} ({understanding.language})")
         print(f"[WeatherGPT][INTENT]\nDetected: {understanding.intent}")
@@ -901,8 +917,6 @@ class LLMService:
         print(f"[WeatherGPT][WEATHER]\nFetched for: {active_city}")
         print(f"[WeatherGPT][GEMINI]\nGenerating conversational response")
         print(f"[WeatherGPT][RESPONSE]\nGenerated successfully")
-
-        # Telemetry Debug Logs for Verification Test Compatibility
         print(f"[WeatherGPT][LOCATION] Query: {text}")
         print(f"[WeatherGPT][LOCATION] Extracted: {understanding.extracted_location or 'None'}")
         print(f"[WeatherGPT][GEOCODER] Provider: {geocoder_provider}")
@@ -910,9 +924,7 @@ class LLMService:
         print(f"[WeatherGPT][COORDINATES] Lat: {resolved_lat}, Lon: {resolved_lon}")
         print(f"[WeatherGPT][WEATHER] Fetching weather using coordinates")
         print(f"[WeatherGPT][WEATHER] Location: {active_city}")
-        print(f"[WeatherGPT] User Query: {text}")
         print(f"[WeatherGPT] Conversation Context: {prev_loc_name} ({prev_time_ref})")
-        print(f"[WeatherGPT] Intent: {understanding.intent}")
         print(f"[WeatherGPT] Activity: {understanding.activity or 'None'}")
         print(f"[WeatherGPT] Extracted Location: {understanding.extracted_location or 'None'}")
         print(f"[WeatherGPT] Time Reference: {understanding.time_reference}")
@@ -922,7 +934,6 @@ class LLMService:
         print(f"[WeatherGPT] Active Location Before: {active_city_before}")
         print(f"[WeatherGPT] Active Location After: {active_city}")
         print(f"[WeatherGPT] Resolved Coordinates: {resolved_lat}, {resolved_lon}")
-        print(f"[WeatherGPT] Weather API Request: {active_city} ({resolved_lat}, {resolved_lon})")
         print(f"[WeatherGPT] Weather API Response: {curr_temp}°C, {current.get('condition')}, rain: {round(current.get('precipitation', 0), 1)}mm")
         print(f"[WeatherGPT] Recommendation: {rec_summary}")
         print(f"[WeatherGPT] Final Response Language: {understanding.language}")

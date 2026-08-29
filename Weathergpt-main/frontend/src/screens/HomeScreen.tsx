@@ -17,7 +17,8 @@ interface HomeScreenProps {
   weather: CurrentWeather | null;
   forecast: ForecastResponse | null;
   alerts: AlertItem[];
-  settings: UserSettings;
+  messages?: any[];
+  onUpdateMessages?: React.Dispatch<React.SetStateAction<any[]>>;
   onSelectCity: (city: string, lat: number, lon: number) => void;
   onTriggerGPS?: () => void;
   onNavigateToDisaster: () => void;
@@ -33,6 +34,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   forecast,
   alerts,
   settings,
+  messages,
+  onUpdateMessages,
   onSelectCity,
   onTriggerGPS,
   onNavigateToDisaster,
@@ -85,6 +88,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             externalQuery={activeQueryToChat}
             onClearExternalQuery={() => setActiveQueryToChat(undefined)}
             onLocationResolved={onSelectCity}
+            messages={messages}
+            onUpdateMessages={onUpdateMessages}
           />
 
           {/* 5. Today's Calm 4-Part Risk Timeline */}

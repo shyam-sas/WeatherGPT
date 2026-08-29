@@ -39,6 +39,21 @@ export const App: React.FC = () => {
   const [language, setLanguage] = useState<string>(getStoredLanguage());
   const [profession, setProfession] = useState<string>(getStoredProfession());
 
+  const [messages, setMessages] = useState<any[]>([
+    {
+      id: 'welcome_1',
+      role: 'assistant',
+      text:
+        getStoredLanguage() === 'ta'
+          ? `வணக்கம்! ${localStorage.getItem('weathergpt_city') || 'உங்கள் பகுதியில்'} வானிலை நிலவரம் குறித்து என்ன தெரிந்து கொள்ள வேண்டும்?`
+          : getStoredLanguage() === 'hi'
+          ? `नमस्ते! ${localStorage.getItem('weathergpt_city') || 'आपके क्षेत्र'} के मौसम के बारे में क्या जानना चाहते हैं?`
+          : `Hello! How can I help you with the weather in ${localStorage.getItem('weathergpt_city') || 'your area'} today?`,
+      timestamp: 'Now',
+      action_tip: 'Ask in English, Tanglish, Hinglish, or 13 Indian languages.',
+    },
+  ]);
+
   const [weather, setWeather] = useState<CurrentWeather | null>(null);
   const [forecast, setForecast] = useState<ForecastResponse | null>(null);
   const [alerts, setAlerts] = useState<AlertItem[]>([]);
@@ -296,6 +311,8 @@ export const App: React.FC = () => {
             forecast={forecast}
             alerts={alerts}
             settings={settings}
+            messages={messages}
+            onUpdateMessages={setMessages}
             onSelectCity={handleSelectCity}
             onTriggerGPS={detectLiveLocation}
             onNavigateToDisaster={() => setActiveTab('disaster')}
@@ -331,6 +348,8 @@ export const App: React.FC = () => {
                 externalQuery={demoQueryToExecute}
                 onClearExternalQuery={() => setDemoQueryToExecute(undefined)}
                 onLocationResolved={handleSelectCity}
+                messages={messages}
+                onUpdateMessages={setMessages}
               />
 
               <div className="pt-2">

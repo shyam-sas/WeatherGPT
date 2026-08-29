@@ -44,6 +44,8 @@ interface VoiceChatBarProps {
   onClearExternalQuery?: () => void;
   standaloneHero?: boolean;
   onLocationResolved?: (city: string, lat: number, lon: number) => void;
+  messages?: MessageItem[];
+  onUpdateMessages?: React.Dispatch<React.SetStateAction<MessageItem[]>>;
 }
 
 export const VoiceChatBar: React.FC<VoiceChatBarProps> = ({
@@ -56,11 +58,13 @@ export const VoiceChatBar: React.FC<VoiceChatBarProps> = ({
   onClearExternalQuery,
   standaloneHero = false,
   onLocationResolved,
+  messages: propMessages,
+  onUpdateMessages,
 }) => {
   const [query, setQuery] = useState('');
   const [isListening, setIsListening] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [messages, setMessages] = useState<MessageItem[]>([
+  const [internalMessages, setInternalMessages] = useState<MessageItem[]>([
     {
       id: 'welcome_1',
       role: 'assistant',
@@ -74,34 +78,16 @@ export const VoiceChatBar: React.FC<VoiceChatBarProps> = ({
       action_tip: 'Ask in English, Tanglish, Hinglish, or 13 Indian languages.',
     },
   ]);
+
+  const messages = propMessages !== undefined ? propMessages : internalMessages;
+  const setMessages = onUpdateMessages || setInternalMessages;
+
   const [isSpeakingId, setIsSpeakingId] = useState<string | null>(null);
   const [micError, setMicError] = useState<string | null>(null);
   const [expandedWhyId, setExpandedWhyId] = useState<string | null>(null);
 
-  const prevCityKey = useRef<string>(`${currentCity}_${currentLat}_${currentLon}`);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
-
-  useEffect(() => {
-    const locKey = `${currentCity}_${currentLat}_${currentLon}`;
-    if (currentCity && prevCityKey.current !== locKey) {
-      prevCityKey.current = locKey;
-      setMessages([
-        {
-          id: 'welcome_' + Date.now(),
-          role: 'assistant',
-          text:
-            language === 'ta'
-              ? `வணக்கம்! ${currentCity} வானிலை நிலவரம் குறித்து என்ன தெரிந்து கொள்ள வேண்டும்?`
-              : language === 'hi'
-              ? `नमस्ते! ${currentCity} के मौसम के बारे में क्या जानना चाहते हैं?`
-              : `Hello! How can I help you with the weather in ${currentCity} today?`,
-          timestamp: 'Now',
-          action_tip: 'Ask in English, Tanglish, Hinglish, or 13 Indian languages.',
-        },
-      ]);
-    }
-  }, [currentCity, currentLat, currentLon, language]);
 
   useEffect(() => {
     if (externalQuery && externalQuery.trim()) {
