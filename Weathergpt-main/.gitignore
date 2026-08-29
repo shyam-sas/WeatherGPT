@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+dist/
+build/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+
+# Environment
+.env
+.env.local
+
+# Android / Capacitor
+android/app/build/
+android/.gradle/
+android/build/
